@@ -33,10 +33,13 @@ namespace covid_19.mash
                .Select(row => (Address: row[0], Number: row[1], Date: DateTime.Parse(row[2])))
                .ToArray();
 
-            const string data_file_name = "covid-19-addresses.csv";
+            const string data_file_name_base = "covid-19-addresses";
+            var data_file_name = $"{data_file_name_base}[{DateTime.Now:yyyy-MM-dd}].csv";
             await using var writer = File.CreateText(data_file_name);
+            var count = 0;
             foreach (var (address, number, date) in rows)
             {
+                count++;
                 var line = string.Join(";",
                     date.ToString("dd.MM.yyyy"),
                     address,
@@ -46,6 +49,7 @@ namespace covid_19.mash
                 await writer.WriteLineAsync(line);
                 Console.WriteLine(line);
             }
+            Console.WriteLine("Всего случаев {0}", count);
         }
     }
 }
